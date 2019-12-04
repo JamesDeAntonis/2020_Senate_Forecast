@@ -1,0 +1,302 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Beamer Presentation
+% LaTeX Template
+% Version 1.0 (10/11/12)
+%
+% This template has been downloaded from:
+% http://www.LaTeXTemplates.com
+%
+% License:
+% CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND THEMES
+%----------------------------------------------------------------------------------------
+
+\documentclass{beamer}
+
+\mode<presentation> {
+
+% The Beamer class comes with a number of default slide themes
+% which change the colors and layouts of slides. Below this is a list
+% of all the themes, uncomment each in turn to see what they look like.
+
+%\usetheme{default}
+%\usetheme{AnnArbor}
+%\usetheme{Antibes}
+%\usetheme{Bergen}
+%\usetheme{Berkeley}
+%\usetheme{Berlin}
+%\usetheme{Boadilla}
+%\usetheme{CambridgeUS}
+%\usetheme{Copenhagen}
+%\usetheme{Darmstadt}
+%\usetheme{Dresden}
+%\usetheme{Frankfurt}
+%\usetheme{Goettingen}
+%\usetheme{Hannover}
+%\usetheme{Ilmenau}
+%\usetheme{JuanLesPins}
+%\usetheme{Luebeck}
+\usetheme{Madrid}
+%\usetheme{Malmoe}
+%\usetheme{Marburg}
+%\usetheme{Montpellier}
+%\usetheme{PaloAlto}
+%\usetheme{Pittsburgh}
+%\usetheme{Rochester}
+%\usetheme{Singapore}
+%\usetheme{Szeged}
+%\usetheme{Warsaw}
+
+% As well as themes, the Beamer class has a number of color themes
+% for any slide theme. Uncomment each of these in turn to see how it
+% changes the colors of your current slide theme.
+
+%\usecolortheme{albatross}
+%\usecolortheme{beaver}
+%\usecolortheme{beetle}
+%\usecolortheme{crane}
+%\usecolortheme{dolphin}
+%\usecolortheme{dove}
+%\usecolortheme{fly}
+%\usecolortheme{lily}
+%\usecolortheme{orchid}
+%\usecolortheme{rose}
+%\usecolortheme{seagull}
+%\usecolortheme{seahorse}
+%\usecolortheme{whale}
+%\usecolortheme{wolverine}
+
+%\setbeamertemplate{footline} % To remove the footer line in all slides uncomment this line
+%\setbeamertemplate{footline}[page number] % To replace the footer line in all slides with a simple slide count uncomment this line
+
+%\setbeamertemplate{navigation symbols}{} % To remove the navigation symbols from the bottom of all slides uncomment this line
+}
+
+\usepackage{graphicx} % Allows including images
+\graphicspath{ {../images/} }
+\usepackage{booktabs} % Allows the use of \toprule, \midrule and \bottomrule in tables
+\usepackage{amsmath}
+\usepackage{verbatim}
+\newcommand{\btVFill}{\vskip0pt plus 1filll}
+\makeatletter
+\newcommand*\l@paragraph{\@dottedtocline{4}{7.0em}{4.1em}}
+\newcommand*\l@subparagraph{\@dottedtocline{5}{10em}{5em}}
+\makeatother
+
+%----------------------------------------------------------------------------------------
+%	TITLE PAGE
+%----------------------------------------------------------------------------------------
+
+\title[US Senate]{2020 US Senate Elections} % The short title appears at the bottom of every slide, the full title is only on the title page
+
+\author{Jamie DeAntonis} % Your name
+\institute[Columbia University] % Your institution as it will appear on the bottom of every slide, may be shorthand to save space
+{
+Columbia University \\ % Your institution for the title page
+\medskip
+\textit{jad2295@columbia.edu} % Your email address
+}
+\date{\today} % Date, can be changed to a custom date
+
+\begin{document}
+
+\begin{frame}
+\titlepage % Print the title page as the first slide
+\end{frame}
+
+\begin{frame}
+\frametitle{Overview} % Table of contents slide, comment this block out to remove it
+\tableofcontents % Throughout your presentation, if you choose to use \section{} and \subsection{} commands, these will automatically be printed on this slide as an overview of your presentation
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+%	PRESENTATION SLIDES
+%----------------------------------------------------------------------------------------
+
+%------------------------------------------------
+\section{Government Structure} % Sections can be created in order to organize your presentation into discrete blocks, all sections and subsections are automatically printed in the table of contents as an overview of the talk
+%------------------------------------------------     us government overview
+
+\begin{frame}
+\frametitle{Overview of US Government}
+
+\begin{centering}
+
+\includegraphics[scale=.5]{gov_overview}
+
+\end{centering}
+
+\end{frame}
+
+%------------------------------------------------     house and senate overview
+
+\begin{frame}
+\frametitle{The Senate and the House of Representatives}
+
+Senate
+
+\begin{itemize}
+	\item 100 members; 2 from each state
+	\item 6-year terms (staggered across even years)
+
+\end{itemize}
+
+House of Representatives
+
+\begin{itemize}
+	\item 435 members; number from each state determined by population
+	\item 2-year terms (every even year)
+\end{itemize}
+
+\end{frame}
+
+%------------------------------------------------     current senate map
+
+\begin{frame}
+\frametitle{Current Senate Map}
+
+\begin{centering}
+
+\begin{table}
+\begin{tabular}{l l l}
+\toprule
+\textbf{} & \textbf{Rep} & \textbf{Dem}\\
+\midrule
+Current & 53 & 47 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{picture}(100,250)
+\put(-60,44){\includegraphics[scale=.5]{curr_map}}
+\end{picture}
+
+\end{centering}
+
+
+\end{frame}
+
+%------------------------------------------------     2020 seats
+
+\section{Party Breakdown of Current Senate}
+
+%------------------------------------------------ 
+
+\begin{frame}
+\frametitle{Senators with Seats up for Election in 2020}
+
+\begin{centering}
+
+\begin{table}
+\begin{tabular}{l l l}
+\toprule
+\textbf{} & \textbf{Rep} & \textbf{Dem}\\
+\midrule
+Current & 53 & 47 \\
+To be contested in 2020 & 23 & 12 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{picture}(100,250)
+\put(-67,57){\includegraphics[scale=.48]{seat_up}}
+\end{picture}
+
+\end{centering}
+
+\end{frame}
+
+%------------------------------------------------     Diverging Stacked Bar Chart
+
+\begin{frame}
+\frametitle{Breakdown of Result Probabilities}
+
+
+\includegraphics[scale=.14]{seat_retention}
+
+
+
+\end{frame}
+
+%------------------------------------------------     Toss-up races
+
+\begin{frame}
+\frametitle{Toss-Up Races}
+
+\begin{table}
+\begin{tabular}{l l}
+\toprule
+\textbf{Rep-controlled} & \textbf{Dem-controlled}\\
+\midrule
+Martha McSally, AZ  & Doug Jones, AL \\
+Cory Gardner, CO &  \\
+Susan Collins, ME &  \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\end{frame}
+
+%------------------------------------------------
+\section{Forecast of Party Breakdown after 2020 Senate Election}
+%------------------------------------------------
+
+%------------------------------------------------     Defining the probabilities
+
+\begin{frame}
+\frametitle{Formalizing Probabilities}
+
+We define the following probabilities:
+
+\begin{table}
+\begin{tabular}{l l}
+\toprule
+\textbf{Category} & \textbf{Probability}\\
+\midrule
+Solid & .9 \\
+Likely & .75 \\
+Lean & .6 \\
+Toss-Up & .5 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Then, assuming an independence assumption amongst races, we have eight binomial random variables, $\{R_S, R_{Li}, R_{Le}, R_T, D_T, D_{Le}, D_{Li}, D_S\}$.  More succinctly, $\{X_i\}$, where $X \in P = \{R, D\}$ and $i \in R = \{S, Li, Le, T\}$.  Let each of these variables take on $1$ if a democrat wins and $0$ otherwise.
+
+Now, we need $$\boxed{\mathbb{P}\bigg(\sum_{X \in P} \sum_{i \in R} X_i \geq 15\bigg)}$$
+
+\end{frame}
+
+%------------------------------------------------     MLE
+
+\begin{frame}
+\frametitle{MLE}
+
+\includegraphics[scale=.14]{seat_retention_with_expec}
+
+\begin{table}
+\begin{tabular}{c | c c c c c c c | c | c}
+\toprule
+\textbf{Party} & \textbf{$R_S$} & \textbf{$R_{Li}$} & \textbf{$R_{Le}$} & \textbf{$T$} & \textbf{$D_{Le}$} & \textbf{$D_{Li}$} & \textbf{$D_S$} & \textbf{Seats} & \textbf{Total}\\
+\midrule
+Rep & 11 & 5 & 1 & 2 & 0 & 0 & 1 & 20 & 50\\
+Dem & 1 & 2 & 0 & 2 & 1 & 2 & 7 & 15 & 50\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}
+\Huge{\centerline{The End}}
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+
+\end{document} 

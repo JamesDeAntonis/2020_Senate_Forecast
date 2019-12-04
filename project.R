@@ -1,0 +1,178 @@
+library(httr)
+library(RCurl)
+library(curl)
+library(usmap)
+library(ggplot2)
+library(forcats)
+library(data.table)
+library(dplyr)
+library(yaml)
+library(diagram)
+library(cowplot)
+# devtools::install_github("CivilServiceUSA/us-senate")
+
+setwd("/Users/Jamie/Documents/EDAV/Presentation/images")
+
+senate <- fread(
+  "https://raw.githubusercontent.com/CivilServiceUSA/us-senate/master/us-senate/data/us-senate.csv"
+  ) %>%
+  mutate(state = state_name,
+         term_end = ifelse(name %in% c("Johnny Isakson", "Gordon Jones", "Tina Smith"),
+                           "2021-01-03", term_end))
+#senate_historical <- yaml.load_file(
+#  "https://raw.githubusercontent.com/unitedstates/
+#congress-legislators/master/legislators-historical.yaml"
+#  )
+
+###############  senate 1
+
+senate1 = senate %>%
+  dplyr::select(state,party) %>%
+  dplyr::mutate(val = ifelse(party=="republican",0,1)) %>%
+  dplyr::select(state,val) %>%
+  dplyr::group_by(state) %>%
+  dplyr::summarize(val2 = sum(val)) %>%
+  dplyr::mutate(party_id = ifelse(val2==0,"2 rep",ifelse(val2==2,"2 dem","1 of each"))) %>%
+  dplyr::select(state,party_id)
+
+curr_map = plot_usmap(data = senate1, regions = "states", values = "party_id") +
+  scale_fill_manual(values = c("grey","steelblue2","firebrick2")) +
+  theme_nothing() +
+  theme(legend.position="bottom") +
+  theme(legend.title = element_blank())
+
+
+png(filename="curr_map.png", bg="transparent")
+plot(curr_map)
+dev.off()
+
+
+###############  senate 2
+
+senate2 = senate %>%
+  dplyr::filter(substr(term_end, 1, 4) == "2021") %>%
+  dplyr::select(state,party) %>%
+  dplyr::mutate(republican = ifelse(party=="republican", 1, 0),
+                democrat   = ifelse(party=="democrat", 1, 0)) %>%
+  dplyr::select(state, republican, democrat) %>%
+  dplyr::group_by(state) %>%
+  dplyr::summarize(republican = sum(republican),
+                   democrat   = sum(democrat)) %>%
+  dplyr::mutate(party = factor(ifelse(republican>=1, 
+                               ifelse(republican==2, "2 republican", "1 republican"),
+                               "1 democrat"),
+                               levels = c("2 republican", "1 republican", "1 democrat")))
+
+seat_up = plot_usmap(data = senate2, regions = "states", values = "party") +
+  scale_fill_manual(values = c("dark red", "firebrick2", "steelblue2")) +
+  theme_nothing() +
+  theme(legend.position="bottom") +
+  theme(legend.title = element_blank())
+
+png(filename="seat_up.png", bg="transparent")
+plot(seat_up)
+dev.off()
+
+# perhaps senate over time
+# one graph at state-level?  Perhaps one 2020 house race
+
+###############  forecast
+
+get_chances_df <- function(state_vector, chance_marker, direction) {
+  chances_df <- data.frame(state_vector, stringsAsFactors=TRUE) %>%
+    `colnames<-` (c("state")) %>%
+    dplyr::mutate(chances=factor(chance_marker),
+                  marker=direction)
+  return(chances_df)
+}
+
+solid_d <- get_chances_df(c("Delaware", "Illinois", "Massachusetts", "New Hampshire",
+              "New Jersey", "Oregon", "Rhode Island", "Virginia"),
+              'solid', 1)
+likely_d <- get_chances_df(c("Minnesota", "New Mexico"), 'likely', 1)
+lean_d   <- get_chances_df(c("Michigan"), 'lean', 1)
+toss_up  <- get_chances_df(c("Alabama", "Arizona", "Colorado", "Maine"), 'toss_up', -1)
+lean_r   <- get_chances_df(c("North Carolina"), 'lean', 1)
+likely_r <- get_chances_df(c("Georgia", "Iowa", "Kansas", "Kentucky", "Mississippi", "Tennessee"), 
+                           'likely', 1)
+solid_r  <- get_chances_df(c("Alaska", "Arkansas", "Idaho", "Louisiana", "Montana", "Nebraska",
+                             "Oklahoma", "South Carolina", "South Dakota", "Texas", "West Virginia", 
+                             "Wyoming"), 'solid', 1)
+chances_df <- rbind(solid_d, likely_d, lean_d, toss_up, lean_r, likely_r, solid_r)
+
+levels_chances_party = c("solid republican", "likely republican", "lean republican",
+                         "toss_up", "solid democrat", "likely democrat", "lean democrat")
+
+current_seat_up = senate %>%
+  dplyr::filter(substr(term_end, 1, 4) == "2021") %>%
+  dplyr::select(state, name, party) %>%
+  merge(., chances_df, by='state') %>%
+  dplyr::mutate(marker_2 = marker * ifelse(party=='republican', -1, 1),
+                chances_party = factor(ifelse(chances != "toss_up", paste(chances, party), "toss_up"),
+                                       levels=levels_chances_party)) %>%
+  dplyr::select(-name, -chances, -state) %>%
+  dplyr::group_by(party, chances_party) %>%
+  dplyr::summarise(marker = sum(abs(marker)), marker_2 = sum(marker_2)) %>%
+  dplyr::ungroup()
+
+
+
+chances_of_retaining_seat <- ggplot(current_seat_up, 
+                                    aes(x=party, y=marker_2, fill=chances_party, 
+                                        label=marker)) +
+  geom_col(width = .5) +
+  coord_flip() +
+  ggtitle("Odds of retaining seat, by party affiliation of senator with expiring term") +
+  scale_fill_manual(values = c("red", "magenta", "orange", "gray100", 
+                                 "cyan", "green", "yellow")) +
+  xlab("") + ylab("Count") +
+  theme(legend.position="bottom") +
+  theme(legend.title = element_blank()) +
+  theme(aspect.ratio = 0.2) +
+  geom_text(size = 5, position = position_stack(vjust = 0.5))
+
+chances_of_retaining_seat
+ggsave("seat_retention.png", dpi=300, height=4, width=8, units="in", bg = "transparent")
+
+
+
+###############  with probabilities
+
+to_merge <- data.frame('chances_party' = c('solid republican', 'likely republican', 'lean republican',
+                                           'toss_up', 'lean democrat', 'likely democrat',
+                                           'solid democrat'),
+                       'probab'        = c(.1, .25, .4, .5, .6, .75, .9))
+
+prob_analysis <- current_seat_up %>%
+  dplyr::select(-party) %>%
+  dplyr::group_by(chances_party) %>%
+  dplyr::summarise(marker = sum(marker), 
+                   marker_2 = sum(marker_2)) %>%
+  dplyr::ungroup() %>%
+  dplyr::mutate(marker_2 = ifelse(chances_party == "toss_up", -marker, marker_2)) %>%
+  merge(., to_merge) %>%
+  dplyr::mutate(expec = paste(round(probab * marker), ',', 
+                              round((1 - probab) * marker_2), sep=''),
+                democrat = probab * marker_2,
+                republican = (1 - probab) * marker_2,
+                seat_up = "seat up") %>%
+  tidyr::gather(key = "party_2", value = "seats", 
+                -chances_party, -marker, -marker_2, -probab, -expec, -seat_up) %>%
+  dplyr::mutate(seat_abs = round(abs(seats)))
+
+applied_probabs <- ggplot(prob_analysis, 
+                                    aes(x=party_2, y=seats, fill=chances_party, 
+                                        label=seat_abs)) +
+  geom_col(width = .5) +
+  coord_flip() +
+  ggtitle("Odds of retaining seat, by party affiliation of senator with expiring term") +
+  scale_fill_manual(values = c("red", "magenta", "orange", "gray100", 
+                               "cyan", "green", "yellow")) +
+  xlab("") + ylab("Count") +
+  theme(legend.position="bottom") +
+  theme(legend.title = element_blank()) +
+  theme(aspect.ratio = 0.2) +
+  geom_text(size = 5, position = position_stack(vjust = 0.5))
+
+applied_probabs
+ggsave("seat_retention_with_expec.png", dpi=300, height=4, width=8, units="in", bg = "transparent")
